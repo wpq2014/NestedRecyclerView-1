@@ -5,11 +5,10 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yu.nested.library.NestedRecyclerView;
+import com.yu.nested.library.NestedParentRecyclerView;
 import com.yu.nested.recyclerview.R;
 import com.yu.nested.recyclerview.base.RelatedTabLayout;
 
-import org.jetbrains.annotations.NotNull;
 
 //该种模式适合tab栏有动画的设计形式，因为对背部tab做动画会和recyclerView的滑动互相影响
 public class OutTabFragment extends PullRefreshFragment {
@@ -21,16 +20,16 @@ public class OutTabFragment extends PullRefreshFragment {
     }
 
     @Override
-    public void loadView(@NotNull View view) {
+    public void loadView( View view) {
         super.loadView(view);
-        mOutTabLayout = find(R.id.outTab);
+        mOutTabLayout = view.findViewById(R.id.outTab);
         //需要同步内外两个tabLayout的滑动状态
         mBottomTabView.getTabLayout().setBackgroundColor(Color.GRAY);
         mOutTabLayout.setRelateScrollView(mBottomTabView.getTabLayout());
         mBottomTabView.getTabLayout().setRelateScrollView(mOutTabLayout);
         mOutTabLayout.setupWithViewPager(mBottomTabView.getViewPager());
 
-        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedRecyclerView.ChildRecyclerViewHelper() {
+        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedParentRecyclerView.ChildRecyclerViewHelper() {
             @Override
             public RecyclerView getCurRecyclerView() {
                 return mBottomTabView.getCurRecyclerView();

@@ -1,8 +1,9 @@
 package com.yu.nested.recyclerview.base;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
 import com.yu.lib.common.ui.BaseFragment;
 import com.yu.lib.common.utils.ToastUtil;
-import com.yu.nested.library.NestedRecyclerView;
+import com.yu.nested.library.NestedParentRecyclerView;
 import com.yu.nested.recyclerview.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,17 +36,18 @@ public abstract class BaseNestedFragment extends BaseFragment {
         ((TextView) find(R.id.title)).setText(getClass().getSimpleName());
     }
 
-    public static class BottomTabView extends FrameLayout {
+    public static class BottomTabView extends FrameLayout implements NestedParentRecyclerView.OnActionListener {
         public MyFragment mCurFragment;
-        private NestedRecyclerView mNestedRecyclerView;
+        private NestedParentRecyclerView mNestedRecyclerView;
         private View mRootView;
         private RelatedTabLayout mTabLayout;
         private ViewPager mViewPager;
         private int mViewHeight;
 
-        public BottomTabView(@NonNull Context context, FragmentManager manager, NestedRecyclerView nestedRecyclerView) {
+        public BottomTabView(@NonNull Context context, FragmentManager manager, NestedParentRecyclerView nestedRecyclerView) {
             super(context);
             mNestedRecyclerView = nestedRecyclerView;
+            mNestedRecyclerView.addOnActionListener(this);
             init(manager);
         }
 
@@ -114,9 +115,29 @@ public abstract class BaseNestedFragment extends BaseFragment {
         public ViewPager getViewPager() {
             return mViewPager;
         }
+
+        private ObjectAnimator mObjectAnimator;
+
+        @Override
+        public void onTabMounting(boolean isMounting) {
+            if (mObjectAnimator != null && mObjectAnimator.isRunning()) {
+                mObjectAnimator.cancel();
+            }
+            float endValue = isMounting ? 0f : 1f;
+            Log.e("动画", "" + mTabLayout.getAnimationProgress() + " " + endValue);
+            mObjectAnimator = ObjectAnimator.ofFloat(mTabLayout, "animationProgress",
+                    mTabLayout.getAnimationProgress(), endValue);
+            mObjectAnimator.setDuration(500);
+            mObjectAnimator.start();
+        }
+
+        @Override
+        public void onTabViewFirstShow() {
+
+        }
     }
 
-    public static class MyFragment extends Fragment implements NestedRecyclerView.OnActionListener {
+    public static class MyFragment extends Fragment implements NestedParentRecyclerView.OnActionListener {
         private RecyclerView mRecyclerView;
         private View mRootView;
         private int pageCount = 50;
@@ -134,7 +155,7 @@ public abstract class BaseNestedFragment extends BaseFragment {
                     list.add(" == " + i);
                 }
 
-                //NestedRecyclerView会拦截内部RecyclerView的触摸事件，自行处理所有的触摸和滚动逻辑，所以此处不适合用类似smartRefreshLayout这类实现机制的footer框架，
+                //NestedRecyclerView会拦截内部RecyclerView的触摸事件，自行处理所有的触摸和滚动逻辑，所以此处不适合用类似SmartRefreshLayout这类实现机制的footer框架，
                 //而需要使用基于ViewHolder实现的footer
                 final LoadMoreAdapter adapter = new LoadMoreAdapter(new SingleRecyclerAdapter<Object>(list, R.layout.item_test) {
                     @Override

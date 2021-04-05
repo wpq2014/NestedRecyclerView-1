@@ -9,12 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yu.lib.common.utils.ToastUtil;
-import com.yu.nested.library.NestedRecyclerView;
+import com.yu.nested.library.NestedParentRecyclerView;
 import com.yu.nested.recyclerview.R;
+import com.yu.nested.recyclerview.Utils;
 import com.yu.nested.recyclerview.base.BaseNestedFragment;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +26,9 @@ public class NormalFragment extends BaseNestedFragment {
     }
 
     @Override
-    public void loadView(@NotNull final View view) {
+    public void loadView(final View view) {
         super.loadView(view);
-        final NestedRecyclerView mNestedRecyclerView = view.findViewById(R.id.recyclerView);
+        final NestedParentRecyclerView mNestedRecyclerView = view.findViewById(R.id.recyclerView);
         mNestedRecyclerView.setLayoutManager(new LinearLayoutManager(mNestedRecyclerView.getContext()));
         final List<Object> list = new ArrayList<>();
         for (int i=0; i<40; i++) {
@@ -101,7 +99,7 @@ public class NormalFragment extends BaseNestedFragment {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ToastUtil.INSTANCE.showToast(v.getContext(), "点击 out：" + position);
+                            Utils.showToast(v.getContext(), "点击 out：" + position);
                         }
                     });
                 } else {
@@ -114,18 +112,18 @@ public class NormalFragment extends BaseNestedFragment {
                 return list.size() + 1;
             }
         });
-        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedRecyclerView.ChildRecyclerViewHelper() {
+        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedParentRecyclerView.ChildRecyclerViewHelper() {
             @Override
             public RecyclerView getCurRecyclerView() {
                 return mBottomTabView.getCurRecyclerView();
             }
 
         });
-        mNestedRecyclerView.addOnActionListener(new NestedRecyclerView.OnActionListener() {
+        mNestedRecyclerView.addOnActionListener(new NestedParentRecyclerView.OnActionListener() {
             @Override
             public void onTabMounting(boolean isMounting) {
                 if(isMounting) {
-                    ToastUtil.INSTANCE.showToast(mNestedRecyclerView.getContext(), "吸顶了");
+                    Utils.showToast(mNestedRecyclerView.getContext(), "吸顶了");
                 }
             }
 

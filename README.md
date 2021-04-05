@@ -54,7 +54,7 @@ allprojects {
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
         
-                <com.yu.nested.library.NestedRecyclerView
+                <com.yu.nested.library.NestedParentRecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>

@@ -2,6 +2,7 @@ package com.yu.nested.recyclerview.demo;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -9,12 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yu.lib.common.utils.ToastUtil;
-import com.yu.nested.library.NestedRecyclerView;
+import com.yu.nested.library.NestedParentRecyclerView;
 import com.yu.nested.recyclerview.R;
+import com.yu.nested.recyclerview.Utils;
 import com.yu.nested.recyclerview.base.BaseNestedFragment;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 //而需要使用基于ViewHolder实现的footer
 public class PullRefreshFragment extends BaseNestedFragment {
     protected BottomTabView mBottomTabView;
-    protected NestedRecyclerView mNestedRecyclerView;
+    protected NestedParentRecyclerView mNestedRecyclerView;
 
     @Override
     public int getLayoutRes() {
@@ -32,7 +32,7 @@ public class PullRefreshFragment extends BaseNestedFragment {
     }
 
     @Override
-    public void loadView(@NotNull final View view) {
+    public void loadView(final View view) {
         super.loadView(view);
         mNestedRecyclerView = view.findViewById(R.id.recyclerView);
         mNestedRecyclerView.setLayoutManager(new LinearLayoutManager(mNestedRecyclerView.getContext()));
@@ -48,7 +48,7 @@ public class PullRefreshFragment extends BaseNestedFragment {
         //对于复杂底部View，例如常见的信息流卡片，这个卡顿会十分明显，解决卡顿的一个方案就是提前预加载底部ViewPager
         //提前渲染View，只是new 出View类，并不会引发绘制，需要将其加到某个容器内提前渲染
         mBottomTabView = new BaseNestedFragment.BottomTabView(view.getContext(), getChildFragmentManager(), mNestedRecyclerView);
-        FrameLayout cacheContainerView = find(R.id.cacheContainer);
+        FrameLayout cacheContainerView = view.findViewById(R.id.cacheContainer);
         cacheContainerView.addView(mBottomTabView);
         //设置底部Tab View大小，必须！！！！！！！！！！！
         mNestedRecyclerView.post(new Runnable() {
@@ -94,7 +94,7 @@ public class PullRefreshFragment extends BaseNestedFragment {
                     titleView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ToastUtil.INSTANCE.showToast(v.getContext(), "点击 out：" + position);
+                            Utils.showToast(v.getContext(), "点击 out：" + position);
                         }
                     });
                 } else {
@@ -107,11 +107,21 @@ public class PullRefreshFragment extends BaseNestedFragment {
                 return list.size() + 1;
             }
         });
-        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedRecyclerView.ChildRecyclerViewHelper() {
+        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedParentRecyclerView.ChildRecyclerViewHelper() {
             @Override
             public RecyclerView getCurRecyclerView() {
                 return mBottomTabView.getCurRecyclerView();
             }
         });
+
+        Button btnToTop = view.findViewById(R.id.btn_toTop);
+        if (btnToTop != null) {
+            btnToTop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mNestedRecyclerView.scrollToTop();
+                }
+            });
+        }
     }
 }

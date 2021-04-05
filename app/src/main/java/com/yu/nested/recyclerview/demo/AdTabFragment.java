@@ -4,11 +4,9 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yu.lib.common.utils.DisplayUtilsKt;
-import com.yu.nested.library.NestedRecyclerView;
+import com.yu.nested.library.NestedParentRecyclerView;
 import com.yu.nested.recyclerview.R;
-
-import org.jetbrains.annotations.NotNull;
+import com.yu.nested.recyclerview.Utils;
 
 public class AdTabFragment extends OutTabFragment {
 
@@ -18,14 +16,14 @@ public class AdTabFragment extends OutTabFragment {
     }
 
     @Override
-    public void loadView(@NotNull View view) {
+    public void loadView(View view) {
         super.loadView(view);
 
-        final View mountingTabView = find(R.id.mountingTab);
+        final View mountingTabView = view.findViewById(R.id.mountingTab);
         //设置吸顶偏移量，增加广告后，需要提前进入吸顶状态
-        final int adHeight = (int) DisplayUtilsKt.dp2px(view.getContext(), 30);
+        final int adHeight = (int) Utils.dp2px(view.getContext(), 30f);
         mNestedRecyclerView.setMountingDistance(adHeight);
-        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedRecyclerView.ChildRecyclerViewHelper() {
+        mNestedRecyclerView.setChildRecyclerViewHelper(new NestedParentRecyclerView.ChildRecyclerViewHelper() {
             @Override
             public RecyclerView getCurRecyclerView() {
                 return mBottomTabView.getCurRecyclerView();

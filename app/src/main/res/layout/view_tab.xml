@@ -9,12 +9,15 @@
     <com.yu.nested.recyclerview.base.RelatedTabLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_blue_light"
-        android:layout_height="40dp" />
+        android:background="@android:color/holo_red_light"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:paddingBottom="20dp"/>
 
-    <com.yu.nested.recyclerview.base.RecyclerViewPager
+    <com.yu.nested.recyclerview.base.NestedViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>

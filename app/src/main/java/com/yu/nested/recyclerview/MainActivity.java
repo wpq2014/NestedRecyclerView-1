@@ -26,25 +26,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("cache", checkBox.isChecked());
-                HostActivityKt.startFragment(v.getContext(), NormalFragment.class, bundle);
+                Utils.startFragment(v.getContext(), NormalFragment.class, bundle);
             }
         });
         findViewById(R.id.pull).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HostActivityKt.startFragment(v.getContext(), PullRefreshFragment.class);
+                Utils.startFragment(v.getContext(), PullRefreshFragment.class, null);
             }
         });
         findViewById(R.id.ad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HostActivityKt.startFragment(v.getContext(), AdTabFragment.class);
+                Utils.startFragment(v.getContext(), AdTabFragment.class, null);
             }
         });
         findViewById(R.id.outTab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HostActivityKt.startFragment(v.getContext(), OutTabFragment.class);
+                Utils.startFragment(v.getContext(), OutTabFragment.class, null);
             }
         });
     }
